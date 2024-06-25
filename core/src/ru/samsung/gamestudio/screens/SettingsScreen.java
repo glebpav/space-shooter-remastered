@@ -16,6 +16,9 @@ public class SettingsScreen extends BaseScreen{
         stage.addActor(ui.root);
 
         ui.returnButton.addListener(onButtonReturnClickedListener);
+        ui.soundLabel.addListener(onSoundLabelClickedListener);
+        ui.musicLabel.addListener(onMusicLabelClickedListener);
+        ui.recordsLabel.addListener(onRecordsLabelClickedListener);
 
     }
 
@@ -23,6 +26,27 @@ public class SettingsScreen extends BaseScreen{
         @Override
         public void clicked(InputEvent event, float x, float y) {
             myGdxGame.setScreen(myGdxGame.menuScreen);
+        }
+    };
+
+    ClickListener onSoundLabelClickedListener = new ClickListener() {
+        @Override
+        public void clicked(InputEvent event, float x, float y) {
+            System.out.println("on sound clicked");
+        }
+    };
+
+    ClickListener onMusicLabelClickedListener = new ClickListener() {
+        @Override
+        public void clicked(InputEvent event, float x, float y) {
+            System.out.println("on music clicked");
+        }
+    };
+
+    ClickListener onRecordsLabelClickedListener = new ClickListener() {
+        @Override
+        public void clicked(InputEvent event, float x, float y) {
+            System.out.println("on records clicked");
         }
     };
 
