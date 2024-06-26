@@ -5,19 +5,27 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import org.w3c.dom.ls.LSOutput;
 import ru.samsung.gamestudio.GameResources;
 import ru.samsung.gamestudio.GameSettings;
 import ru.samsung.gamestudio.MyGdxGame;
 import ru.samsung.gamestudio.game.GameSession;
 import ru.samsung.gamestudio.game.GameState;
+import ru.samsung.gamestudio.game.objects.BulletObject;
 import ru.samsung.gamestudio.game.objects.ShipObject;
+import ru.samsung.gamestudio.game.objects.TrashObject;
 import ru.samsung.gamestudio.managers.MemoryManager;
 import ru.samsung.gamestudio.ui.GameUi;
+
+import java.util.ArrayList;
 
 public class GameScreen extends BaseScreen {
 
     GameUi ui;
     GameSession session;
+
+    ArrayList<TrashObject> trashArray;
+    ArrayList<BulletObject> bulletArray;
 
     ShipObject shipObject;
 
@@ -25,6 +33,8 @@ public class GameScreen extends BaseScreen {
         super(myGdxGame);
 
         session = new GameSession();
+        trashArray = new ArrayList<>();
+        bulletArray = new ArrayList<>();
 
         shipObject = new ShipObject(
                 GameResources.SHIP_IMG_PATH,
@@ -50,20 +60,22 @@ public class GameScreen extends BaseScreen {
         super.render(delta);
 
         // handleInput();
+        System.out.println(trashArray.size());
 
         if (session.state == GameState.PLAYING) {
             if (session.shouldSpawnTrash()) {
-                /*TrashObject trashObject = new TrashObject(
+                TrashObject trashObject = new TrashObject(
                         GameSettings.TRASH_WIDTH, GameSettings.TRASH_HEIGHT,
                         GameResources.TRASH_IMG_PATH,
                         myGdxGame.world
                 );
-                trashArray.add(trashObject);*/
+                trashArray.add(trashObject);
+                ui.gameLayer.addActor(trashObject);
             }
 
             /*if (shipObject.needToShoot()) {
                 BulletObject laserBullet = new BulletObject(
-                        shipObject.getX(), shipObject.getY() + shipObject.height / 2,
+                        shipObject.getX(), shipObject.getY() + shipObject.getHeight() / 2,
                         GameSettings.BULLET_WIDTH, GameSettings.BULLET_HEIGHT,
                         GameResources.BULLET_IMG_PATH,
                         myGdxGame.world
@@ -77,7 +89,7 @@ public class GameScreen extends BaseScreen {
                 // recordsListView.setRecords(MemoryManager.loadRecordsTable());
             }
 
-            // updateTrash();
+            updateTrash();
             // updateBullets();
             // backgroundView.move();
             session.updateScore();
@@ -85,6 +97,26 @@ public class GameScreen extends BaseScreen {
             ui.liveView.setLeftLives(shipObject.getLiveLeft());
 
             myGdxGame.stepWorld();
+        }
+    }
+
+    private void updateTrash() {
+        for (int i = 0; i < trashArray.size(); i++) {
+
+            System.out.println("trashArray(" + i + "): " + trashArray.get(i).getY() + ", " + trashArray.get(i).getX());
+
+            boolean hasToBeDestroyed = !trashArray.get(i).isAlive() || !trashArray.get(i).isInFrame();
+
+            if (!trashArray.get(i).isAlive()) {
+                session.destructionRegistration();
+                if (myGdxGame.audioManager.isSoundOn) myGdxGame.audioManager.explosionSound.play(0.2f);
+            }
+
+            if (hasToBeDestroyed) {
+                myGdxGame.world.destroyBody(trashArray.get(i).body);
+                ui.gameLayer.removeActor(trashArray.get(i));
+                trashArray.remove(i--);
+            }
         }
     }
 

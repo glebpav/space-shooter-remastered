@@ -63,7 +63,7 @@ public abstract class GameObject extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        image.setPosition(getX(), getY());
+        image.setPosition(getX() - getWidth() / 2, getY() - getHeight() / 2);
         image.draw(batch, parentAlpha);
     }
 
