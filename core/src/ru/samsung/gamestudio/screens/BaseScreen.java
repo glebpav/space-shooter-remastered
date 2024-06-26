@@ -1,6 +1,7 @@
 package ru.samsung.gamestudio.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -32,5 +33,8 @@ public abstract class BaseScreen extends ScreenAdapter {
         ScreenUtils.clear(Color.GRAY);
         stage.act(delta);
         stage.draw();
+        handleInput();
     }
+
+    public void handleInput() {}
 }
