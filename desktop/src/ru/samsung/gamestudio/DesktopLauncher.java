@@ -12,7 +12,7 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(60);
-		config.setWindowedMode(SCREEN_WIDTH, SCREEN_HEIGHT);
+		config.setWindowedMode(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
 		config.setTitle("Space shooter (remastered)");
 		new Lwjgl3Application(new MyGdxGame(), config);
 	}
