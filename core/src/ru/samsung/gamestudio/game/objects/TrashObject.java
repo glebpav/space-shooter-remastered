@@ -34,6 +34,11 @@ public class TrashObject extends GameObject {
     }
 
     @Override
+    public boolean hasToBeDestroyed() {
+        return !isInFrame() || !isAlive();
+    }
+
+    @Override
     public void hit() {
         livesLeft -= 1;
     }

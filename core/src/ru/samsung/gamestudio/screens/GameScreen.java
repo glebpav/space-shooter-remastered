@@ -10,6 +10,7 @@ import ru.samsung.gamestudio.MyGdxGame;
 import ru.samsung.gamestudio.game.GameSession;
 import ru.samsung.gamestudio.game.GameState;
 import ru.samsung.gamestudio.game.objects.BulletObject;
+import ru.samsung.gamestudio.game.objects.GameObject;
 import ru.samsung.gamestudio.game.objects.ShipObject;
 import ru.samsung.gamestudio.game.objects.TrashObject;
 import ru.samsung.gamestudio.managers.ContactManager;
@@ -17,6 +18,9 @@ import ru.samsung.gamestudio.managers.MemoryManager;
 import ru.samsung.gamestudio.ui.game.GameUi;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.stream.Collectors;
 
 public class GameScreen extends BaseScreen {
 
@@ -107,33 +111,30 @@ public class GameScreen extends BaseScreen {
     }
 
     private void updateTrash() {
-        for (int i = 0; i < trashArray.size(); i++) {
-
-            // System.out.println("trashArray(" + i + "): " + trashArray.get(i).getY() + ", " + trashArray.get(i).getX());
-
-            boolean hasToBeDestroyed = !trashArray.get(i).isAlive() || !trashArray.get(i).isInFrame();
-
-            if (!trashArray.get(i).isAlive()) {
+        trashArray = trashArray.stream().filter(trashObject -> {
+            if (!trashObject.isAlive()) {
                 session.destructionRegistration();
                 if (myGdxGame.audioManager.isSoundOn) myGdxGame.audioManager.explosionSound.play(0.2f);
             }
-
-            if (hasToBeDestroyed) {
-                myGdxGame.world.destroyBody(trashArray.get(i).body);
-                ui.gameLayer.removeActor(trashArray.get(i));
-                trashArray.remove(i--);
-            }
-        }
+            return deletePhysicObjectWrapper(trashObject);
+        }).collect(Collectors.toCollection(ArrayList::new));
     }
 
     private void updateBullets() {
-        for (int i = 0; i < bulletArray.size(); i++) {
-            if (bulletArray.get(i).hasToBeDestroyed()) {
-                myGdxGame.world.destroyBody(bulletArray.get(i).body);
-                ui.gameLayer.removeActor(bulletArray.get(i));
-                bulletArray.remove(i--);
-            }
+        bulletArray = bulletArray
+                .stream()
+                .filter(this::deletePhysicObjectWrapper)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    private boolean deletePhysicObjectWrapper(GameObject gameObject) {
+        if (gameObject.hasToBeDestroyed()) {
+            myGdxGame.world.destroyBody(gameObject.body);
+            ui.gameLayer.removeActor(gameObject);
+            gameObject.remove();
+            return false;
         }
+        return true;
     }
 
     @Override
@@ -142,6 +143,34 @@ public class GameScreen extends BaseScreen {
             Vector3 touch = myGdxGame.camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
             shipObject.move(touch);
         }
+    }
+
+    private void restartGame() {
+
+        trashArray.forEach(it -> {
+            myGdxGame.world.destroyBody(it.body);
+            it.remove();
+        });
+        trashArray.clear();
+
+        bulletArray.forEach(it -> {
+            myGdxGame.world.destroyBody(it.body);
+            it.remove();
+        });
+        bulletArray.clear();
+
+        if (shipObject != null) {
+            myGdxGame.world.destroyBody(shipObject.body);
+        }
+
+        shipObject = new ShipObject(
+                GameResources.SHIP_IMG_PATH,
+                GameSettings.SCREEN_WIDTH / 2, 150,
+                GameSettings.SHIP_WIDTH, GameSettings.SHIP_HEIGHT,
+                myGdxGame.world
+        );
+
+        session.startGame();
     }
 
     ClickListener onButtonPauseClickedListener = new ClickListener() {
@@ -183,25 +212,4 @@ public class GameScreen extends BaseScreen {
             myGdxGame.setScreen(myGdxGame.menuScreen);
         }
     };
-
-    private void restartGame() {
-        for (int i = 0; i < trashArray.size(); i++) {
-            myGdxGame.world.destroyBody(trashArray.get(i).body);
-            trashArray.remove(i--);
-        }
-
-        if (shipObject != null) {
-            myGdxGame.world.destroyBody(shipObject.body);
-        }
-
-        shipObject = new ShipObject(
-                GameResources.SHIP_IMG_PATH,
-                GameSettings.SCREEN_WIDTH / 2, 150,
-                GameSettings.SHIP_WIDTH, GameSettings.SHIP_HEIGHT,
-                myGdxGame.world
-        );
-
-        bulletArray.clear();
-        session.startGame();
-    }
 }

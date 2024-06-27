@@ -24,4 +24,6 @@ public class BulletObject extends GameObject {
         wasHit = true;
     }
 
+
+
 }

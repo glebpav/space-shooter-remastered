@@ -61,6 +61,8 @@ public abstract class GameObject extends Actor {
         return body;
     }
 
+    public boolean hasToBeDestroyed() {return false;}
+
     @Override
     public void draw(Batch batch, float parentAlpha) {
         image.setPosition(getX() - getWidth() / 2, getY() - getHeight() / 2);
