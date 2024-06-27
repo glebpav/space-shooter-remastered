@@ -14,6 +14,7 @@ import ru.samsung.gamestudio.game.GameState;
 import ru.samsung.gamestudio.game.objects.BulletObject;
 import ru.samsung.gamestudio.game.objects.ShipObject;
 import ru.samsung.gamestudio.game.objects.TrashObject;
+import ru.samsung.gamestudio.managers.ContactManager;
 import ru.samsung.gamestudio.managers.MemoryManager;
 import ru.samsung.gamestudio.ui.GameUi;
 
@@ -23,6 +24,7 @@ public class GameScreen extends BaseScreen {
 
     GameUi ui;
     GameSession session;
+    ContactManager contactManager;
 
     ArrayList<TrashObject> trashArray;
     ArrayList<BulletObject> bulletArray;
@@ -35,6 +37,7 @@ public class GameScreen extends BaseScreen {
         session = new GameSession();
         trashArray = new ArrayList<>();
         bulletArray = new ArrayList<>();
+        contactManager = new ContactManager(myGdxGame.world);
 
         shipObject = new ShipObject(
                 GameResources.SHIP_IMG_PATH,
@@ -73,16 +76,17 @@ public class GameScreen extends BaseScreen {
                 ui.gameLayer.addActor(trashObject);
             }
 
-            /*if (shipObject.needToShoot()) {
+            if (shipObject.needToShoot()) {
                 BulletObject laserBullet = new BulletObject(
-                        shipObject.getX(), shipObject.getY() + shipObject.getHeight() / 2,
+                        (int) shipObject.getX(), (int) (shipObject.getY() + shipObject.getHeight() / 2),
                         GameSettings.BULLET_WIDTH, GameSettings.BULLET_HEIGHT,
                         GameResources.BULLET_IMG_PATH,
                         myGdxGame.world
                 );
                 bulletArray.add(laserBullet);
+                ui.gameLayer.addActor(laserBullet);
                 if (myGdxGame.audioManager.isSoundOn) myGdxGame.audioManager.shootSound.play();
-            }*/
+            }
 
             if (!shipObject.isAlive()) {
                 session.endGame();
@@ -90,7 +94,7 @@ public class GameScreen extends BaseScreen {
             }
 
             updateTrash();
-            // updateBullets();
+            updateBullets();
             // backgroundView.move();
             session.updateScore();
             ui.scoreLabel.setText("Score: " + session.getScore());
@@ -116,6 +120,16 @@ public class GameScreen extends BaseScreen {
                 myGdxGame.world.destroyBody(trashArray.get(i).body);
                 ui.gameLayer.removeActor(trashArray.get(i));
                 trashArray.remove(i--);
+            }
+        }
+    }
+
+    private void updateBullets() {
+        for (int i = 0; i < bulletArray.size(); i++) {
+            if (bulletArray.get(i).hasToBeDestroyed()) {
+                myGdxGame.world.destroyBody(bulletArray.get(i).body);
+                ui.gameLayer.removeActor(bulletArray.get(i));
+                bulletArray.remove(i--);
             }
         }
     }
