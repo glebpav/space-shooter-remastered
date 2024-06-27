@@ -18,8 +18,6 @@ import ru.samsung.gamestudio.managers.MemoryManager;
 import ru.samsung.gamestudio.ui.game.GameUi;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.stream.Collectors;
 
 public class GameScreen extends BaseScreen {

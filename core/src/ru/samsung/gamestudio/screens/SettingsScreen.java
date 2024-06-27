@@ -3,7 +3,10 @@ package ru.samsung.gamestudio.screens;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import ru.samsung.gamestudio.MyGdxGame;
+import ru.samsung.gamestudio.managers.MemoryManager;
 import ru.samsung.gamestudio.ui.settings.SettingsUi;
+
+import java.util.ArrayList;
 
 public class SettingsScreen extends BaseScreen{
 
@@ -15,11 +18,19 @@ public class SettingsScreen extends BaseScreen{
         ui = new SettingsUi(myGdxGame.skin);
         stage.addActor(ui.root);
 
+        ui.soundLabel.setText("sound: " + translateStateToText(MemoryManager.loadIsSoundOn()));
+        ui.musicLabel.setText("music: " + translateStateToText(MemoryManager.loadIsMusicOn()));
+
+
         ui.returnButton.addListener(onButtonReturnClickedListener);
         ui.soundLabel.addListener(onSoundLabelClickedListener);
         ui.musicLabel.addListener(onMusicLabelClickedListener);
         ui.recordsLabel.addListener(onRecordsLabelClickedListener);
 
+    }
+
+    private String translateStateToText(boolean state) {
+        return state ? "ON" : "OFF";
     }
 
     ClickListener onButtonReturnClickedListener = new ClickListener() {
@@ -32,21 +43,26 @@ public class SettingsScreen extends BaseScreen{
     ClickListener onSoundLabelClickedListener = new ClickListener() {
         @Override
         public void clicked(InputEvent event, float x, float y) {
-            System.out.println("on sound clicked");
+            MemoryManager.saveSoundSettings(!MemoryManager.loadIsSoundOn());
+            ui.soundLabel.setText("sound: " + translateStateToText(MemoryManager.loadIsSoundOn()));
+            myGdxGame.audioManager.updateSoundFlag();
         }
     };
 
     ClickListener onMusicLabelClickedListener = new ClickListener() {
         @Override
         public void clicked(InputEvent event, float x, float y) {
-            System.out.println("on music clicked");
+            MemoryManager.saveMusicSettings(!MemoryManager.loadIsMusicOn());
+            ui.musicLabel.setText("music: " + translateStateToText(MemoryManager.loadIsMusicOn()));
+            myGdxGame.audioManager.updateMusicFlag();
         }
     };
 
     ClickListener onRecordsLabelClickedListener = new ClickListener() {
         @Override
         public void clicked(InputEvent event, float x, float y) {
-            System.out.println("on records clicked");
+            MemoryManager.saveTableOfRecords(new ArrayList<>());
+            ui.recordsLabel.setText("clear records (cleared)");
         }
     };
 
