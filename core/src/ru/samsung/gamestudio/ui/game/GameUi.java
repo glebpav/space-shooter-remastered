@@ -1,16 +1,16 @@
-package ru.samsung.gamestudio.ui;
+package ru.samsung.gamestudio.ui.game;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import ru.samsung.gamestudio.GameSettings;
+import ru.samsung.gamestudio.ui.UiComponent;
 import ru.samsung.gamestudio.ui.components.LiveView;
 import ru.samsung.gamestudio.ui.components.MovingBackground;
 
-public class GameUi extends UiComponent{
+public class GameUi extends UiComponent {
 
     public Group alertLayer;
     public Group hudLayer;
@@ -18,6 +18,7 @@ public class GameUi extends UiComponent{
     public Group gameLayer;
 
     public PauseUi pauseUi;
+    public EndGameUi endGameUi;
 
     public LiveView liveView;
     public Label scoreLabel;
@@ -34,6 +35,7 @@ public class GameUi extends UiComponent{
         alertLayer.setHeight(GameSettings.SCREEN_HEIGHT);
 
         pauseUi = new PauseUi(skin);
+        endGameUi = new EndGameUi(skin);
 
         Image hudBackgroundImage = new Image(new Texture("textures/blackout_top.png"));
         liveView = new LiveView();
@@ -54,10 +56,8 @@ public class GameUi extends UiComponent{
         hudBackgroundImage.setPosition(0, 0);
 
         movingBackground = new MovingBackground("textures/background.png");
-        // backgroundImage.setPosition(0, 0);
         bottomLayer.addActor(movingBackground);
 
-        // alertLayer.addActor(pauseUi.root);
 
         root.addActor(bottomLayer);
         root.addActor(gameLayer);

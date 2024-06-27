@@ -14,7 +14,7 @@ import ru.samsung.gamestudio.game.objects.ShipObject;
 import ru.samsung.gamestudio.game.objects.TrashObject;
 import ru.samsung.gamestudio.managers.ContactManager;
 import ru.samsung.gamestudio.managers.MemoryManager;
-import ru.samsung.gamestudio.ui.GameUi;
+import ru.samsung.gamestudio.ui.game.GameUi;
 
 import java.util.ArrayList;
 
@@ -50,21 +50,19 @@ public class GameScreen extends BaseScreen {
         ui.pauseButton.addListener(onButtonPauseClickedListener);
         ui.pauseUi.homeButton.addListener(onButtonHomeClickedListener);
         ui.pauseUi.resumeButton.addListener(onButtonResumeClickedListener);
+        ui.endGameUi.homeButton.addListener(onButtonHome2ClickedListener);
         ui.gameLayer.addActor(shipObject);
     }
 
     @Override
     public void show() {
         super.show();
-        session.startGame();
+        restartGame();
     }
 
     @Override
     public void render(float delta) {
         super.render(delta);
-
-        // handleInput();
-        // System.out.println(trashArray.size());
 
         if (session.state == GameState.PLAYING) {
             if (session.shouldSpawnTrash()) {
@@ -90,14 +88,16 @@ public class GameScreen extends BaseScreen {
             }
 
             if (!shipObject.isAlive()) {
-                ui.movingBackground.disable();
                 session.endGame();
-                // recordsListView.setRecords(MemoryManager.loadRecordsTable());
+                ui.movingBackground.disable();
+                ui.alertLayer.addActor(ui.endGameUi.root);
+                ui.movingBackground.disable();
+                ui.endGameUi.setItems(MemoryManager.loadRecordsTable());
+                stage.addActor(ui.alertLayer);
             }
 
             updateTrash();
             updateBullets();
-            // backgroundView.move();
             session.updateScore();
             ui.scoreLabel.setText("Score: " + session.getScore());
             ui.liveView.setLeftLives(shipObject.getLiveLeft());
@@ -147,7 +147,6 @@ public class GameScreen extends BaseScreen {
     ClickListener onButtonPauseClickedListener = new ClickListener() {
         @Override
         public void clicked(InputEvent event, float x, float y) {
-            System.out.println("clicked");
             stage.addActor(ui.alertLayer);
             ui.alertLayer.addActor(ui.pauseUi.root);
             ui.movingBackground.disable();
@@ -174,4 +173,35 @@ public class GameScreen extends BaseScreen {
             session.resumeGame();
         }
     };
+
+    ClickListener onButtonHome2ClickedListener = new ClickListener() {
+        @Override
+        public void clicked(InputEvent event, float x, float y) {
+            ui.alertLayer.removeActor(ui.endGameUi.root);
+            ui.alertLayer.remove();
+            ui.movingBackground.activate();
+            myGdxGame.setScreen(myGdxGame.menuScreen);
+        }
+    };
+
+    private void restartGame() {
+        for (int i = 0; i < trashArray.size(); i++) {
+            myGdxGame.world.destroyBody(trashArray.get(i).body);
+            trashArray.remove(i--);
+        }
+
+        if (shipObject != null) {
+            myGdxGame.world.destroyBody(shipObject.body);
+        }
+
+        shipObject = new ShipObject(
+                GameResources.SHIP_IMG_PATH,
+                GameSettings.SCREEN_WIDTH / 2, 150,
+                GameSettings.SHIP_WIDTH, GameSettings.SHIP_HEIGHT,
+                myGdxGame.world
+        );
+
+        bulletArray.clear();
+        session.startGame();
+    }
 }

@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import ru.samsung.gamestudio.MyGdxGame;
-import ru.samsung.gamestudio.ui.MenuUI;
+import ru.samsung.gamestudio.ui.menu.MenuUI;
 
 public class MenuScreen extends BaseScreen{
 

@@ -1,8 +1,9 @@
-package ru.samsung.gamestudio.ui;
+package ru.samsung.gamestudio.ui.settings;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
+import ru.samsung.gamestudio.ui.UiComponent;
 
 public class SettingsUi extends UiComponent {
 

@@ -3,7 +3,7 @@ package ru.samsung.gamestudio.screens;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import ru.samsung.gamestudio.MyGdxGame;
-import ru.samsung.gamestudio.ui.SettingsUi;
+import ru.samsung.gamestudio.ui.settings.SettingsUi;
 
 public class SettingsScreen extends BaseScreen{
 

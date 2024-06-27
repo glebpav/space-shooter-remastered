@@ -6,7 +6,7 @@ public abstract class UiComponent {
 
     public Table root;
 
-    UiComponent() {
+    public UiComponent() {
         root = new Table();
         root.setFillParent(true);
     }

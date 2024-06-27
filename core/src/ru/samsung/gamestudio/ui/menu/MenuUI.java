@@ -1,11 +1,11 @@
-package ru.samsung.gamestudio.ui;
+package ru.samsung.gamestudio.ui.menu;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
+import ru.samsung.gamestudio.ui.UiComponent;
 
-public class MenuUI extends UiComponent{
+public class MenuUI extends UiComponent {
 
     public Button startButton;
     public Button settingsButton;

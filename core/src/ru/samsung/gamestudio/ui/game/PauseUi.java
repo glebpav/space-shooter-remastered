@@ -1,10 +1,11 @@
-package ru.samsung.gamestudio.ui;
+package ru.samsung.gamestudio.ui.game;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import ru.samsung.gamestudio.ui.UiComponent;
 
 public class PauseUi extends UiComponent {
 
