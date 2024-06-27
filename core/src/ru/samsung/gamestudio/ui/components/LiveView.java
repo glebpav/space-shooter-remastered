@@ -10,16 +10,12 @@ public class LiveView extends Actor {
     static final int LIVE_PADDING = 6;
 
     Image liveImage;
-    Image liveImage2;
-    Image liveImage3;
     private int leftLives;
 
     int baseX;
 
     public LiveView() {
         liveImage = new Image(new Texture("textures/life.png"));
-        liveImage3 = new Image(new Texture("textures/life.png"));
-        liveImage2 = new Image(new Texture("textures/life.png"));
     }
 
     public void setLeftLives(int leftLives) {

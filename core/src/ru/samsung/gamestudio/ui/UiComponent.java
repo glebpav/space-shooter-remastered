@@ -11,4 +11,12 @@ public abstract class UiComponent {
         root.setFillParent(true);
     }
 
+    public void hide() {
+        root.setVisible(false);
+    }
+
+    public void release() {
+        root.setVisible(true);
+    }
+
 }

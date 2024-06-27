@@ -1,11 +1,9 @@
 package ru.samsung.gamestudio.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import org.w3c.dom.ls.LSOutput;
 import ru.samsung.gamestudio.GameResources;
 import ru.samsung.gamestudio.GameSettings;
 import ru.samsung.gamestudio.MyGdxGame;
@@ -49,6 +47,9 @@ public class GameScreen extends BaseScreen {
         ui = new GameUi(myGdxGame.skin);
         stage.addActor(ui.root);
 
+        ui.pauseButton.addListener(onButtonPauseClickedListener);
+        ui.pauseUi.homeButton.addListener(onButtonHomeClickedListener);
+        ui.pauseUi.resumeButton.addListener(onButtonResumeClickedListener);
         ui.gameLayer.addActor(shipObject);
     }
 
@@ -63,7 +64,7 @@ public class GameScreen extends BaseScreen {
         super.render(delta);
 
         // handleInput();
-        System.out.println(trashArray.size());
+        // System.out.println(trashArray.size());
 
         if (session.state == GameState.PLAYING) {
             if (session.shouldSpawnTrash()) {
@@ -89,6 +90,7 @@ public class GameScreen extends BaseScreen {
             }
 
             if (!shipObject.isAlive()) {
+                ui.movingBackground.disable();
                 session.endGame();
                 // recordsListView.setRecords(MemoryManager.loadRecordsTable());
             }
@@ -107,7 +109,7 @@ public class GameScreen extends BaseScreen {
     private void updateTrash() {
         for (int i = 0; i < trashArray.size(); i++) {
 
-            System.out.println("trashArray(" + i + "): " + trashArray.get(i).getY() + ", " + trashArray.get(i).getX());
+            // System.out.println("trashArray(" + i + "): " + trashArray.get(i).getY() + ", " + trashArray.get(i).getX());
 
             boolean hasToBeDestroyed = !trashArray.get(i).isAlive() || !trashArray.get(i).isInFrame();
 
@@ -141,4 +143,35 @@ public class GameScreen extends BaseScreen {
             shipObject.move(touch);
         }
     }
+
+    ClickListener onButtonPauseClickedListener = new ClickListener() {
+        @Override
+        public void clicked(InputEvent event, float x, float y) {
+            System.out.println("clicked");
+            stage.addActor(ui.alertLayer);
+            ui.alertLayer.addActor(ui.pauseUi.root);
+            ui.movingBackground.disable();
+            session.pauseGame();
+        }
+    };
+
+    ClickListener onButtonHomeClickedListener = new ClickListener() {
+        @Override
+        public void clicked(InputEvent event, float x, float y) {
+            ui.alertLayer.removeActor(ui.pauseUi.root);
+            ui.alertLayer.remove();
+            ui.movingBackground.activate();
+            myGdxGame.setScreen(myGdxGame.menuScreen);
+        }
+    };
+
+    ClickListener onButtonResumeClickedListener = new ClickListener() {
+        @Override
+        public void clicked(InputEvent event, float x, float y) {
+            ui.alertLayer.removeActor(ui.pauseUi.root);
+            ui.alertLayer.remove();
+            ui.movingBackground.activate();
+            session.resumeGame();
+        }
+    };
 }
